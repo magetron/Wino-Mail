@@ -4323,6 +4323,11 @@ public partial class GmailSynchronizer : WinoSynchronizer<IGoogleApiRequest, Mes
             }
         }
 
+        // A read message archived without user labels or inbox categories has no label at all, so no copy was created
+        // above and MapArchivedMailsAsync downloaded it again on every synchronization with changes.
+        if (packageList.Count == 0 && archiveFolderId.HasValue)
+            packageList.Add(new NewMailItemPackage(baseMailCopy, mimeMessage, ServiceConstants.ARCHIVE_LABEL_ID, extractedContacts));
+
         return packageList;
     }
 
